@@ -32,7 +32,7 @@ sed -i "1s/^/\.section \'\.text\' rwx\n\.entrypoint\n/" asm_code.asm
 # mov eax, 0
 # etc
 
-# For each location, randomly fuck with the registery or add NOPs
+# For each location, randomly mess with the registery or add NOPs
 
 # Re-assemble
 cp $(locate peencode.rb | head -1) ./peencode.rb
