@@ -17,6 +17,9 @@ To do:
     * Random reg instructions before reg clearing instructions
     * Load a global constant, do some randomly-generated complex-looking operations on it, then discard it
     * Dynamic Library Calls? (this would probably break stuff)
-    * Mixed Booleans? (https://blog.quarkslab.com/arybo-cleaning-obfuscation-by-playing-with-mixed-boolean-and-arithmetic-operations.html https://blog.quarkslab.com/phd-defense-of-ninon-eyrolles-obfuscation-with-mixed-boolean-arithmetic-expressions-reconstruction-analysis-and-simplification-tools.html)
+    * Mixed Booleans?  
+    (see https://blog.quarkslab.com/arybo-cleaning-obfuscation-by-playing-with-mixed-boolean-and-arithmetic-operations.html  
+    and  
+    https://blog.quarkslab.com/phd-defense-of-ninon-eyrolles-obfuscation-with-mixed-boolean-arithmetic-expressions-reconstruction-analysis-and-simplification-tools.html for more info)
     
-###### This project is meant to be extensible with minimal effort. Just write a rule file, place it in the rules directory, and re-run the script. Please do contribute to this project. Two heads are better than one.
+###### This project is meant to be extensible with minimal effort. Just write a rule file, place it in the rules directory, and re-run the script. All rules may or may not be randomly applied at runtime for maximum confusion. Please do contribute to this project. Two heads are better than one.
