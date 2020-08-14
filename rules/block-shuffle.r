@@ -1,0 +1,57 @@
+##Do some control flow analysis, and them insert random sequence of jump next_label, label, and randomize the blocks.
+
+##Example :
+
+#push ebp
+#mov ebp, esp
+#instr1
+#instr2
+#instr3
+#instr4
+#instr5
+#instr6
+#instr7
+#instr8
+#ret
+
+## Turns into:
+
+#push ebp
+#mov ebp, esp
+#instr1
+#instr2
+#jmp i3
+#i3:
+#instr3
+#instr4
+#instr5
+#jmp i6
+#i6:
+#instr6
+#instr7
+#jmp i8
+#i8:
+#instr8
+#ret
+
+## Finally, randomize the blocks
+
+#push ebp
+#mov ebp, esp
+#instr1
+#instr2
+#jmp i3
+#i8:
+#instr8
+#ret
+#i6:
+#instr6
+#instr7
+#jmp i8
+#i3:
+#instr3
+#instr4
+#instr5
+#jmp i6
+
+# Ensure labels are not taken: generate random alphanumeric label, grep for it, if taken generate a new one
