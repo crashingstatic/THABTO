@@ -7,12 +7,13 @@ Automatic ghostwriting for AV evasion.
 To do:
   * Sequence injection randomizer
     * Obfuscation rules to be stored one file per rule in 'rules' subdirectory
-  * Break original executable into chunks, md5sum and store the hashes. After recompiling, repeat the process. If a certain threshold of change isn't met, loop the ghostwriting process and try again.
-  * Add support for
-    * ELFs
-    * Mach-o's
+  * After adding section header to original assembly, recompile and break this "control" executable into chunks, sha256sum and store the hashes. After recompiling obfuscated payload, repeat the process. If a certain threshold of change isn't met, loop the ghostwriting process and try again.
+  * ~Add support for~
+    * ~ELFs~
+    * ~Mach-o's~
   * Rule files:
-    * Random NOPs
+    * ~Random NOPs~
+      * ~Non-canonical NOPs?~
     * Block shuffling
     * Random reg instructions before reg clearing instructions
     * Load a global constant, do some randomly-generated complex-looking operations on it, then discard it
