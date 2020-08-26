@@ -35,7 +35,7 @@ do
     LIMIT=$((5 + RANDOM % 100))
 
     # Choose one at random
-    RAND1=$(( RANDOM % ${#lines[@]} ))
+    RAND1=$(( RANDOM % ${#lines[@]}))
 
     unset new_lines
 
@@ -55,7 +55,7 @@ do
     sed -i "${lines[RAND1]}i\    pushfd                                       ;" asm_code.asm
 
     # Attempt to recompile. If no error, exit loop
-    ./encode.rb asm_code.asm -o payload && break
+    ./encode.rb asm_code.asm -o payload 2>/dev/null && break
 
     # If compile error, restore backup and try again
     cp asm_code.asm.bak asm_code.asm

@@ -23,6 +23,7 @@
 # Then call thabto.sh like so
 # ./thabto.sh raw_binary output_file
 
+# Payload must change at least 75%
 THRESHOLD=75
 
 
@@ -82,7 +83,11 @@ find rules/ -type f -name *'.r' | shuf -r | while read rule
 do
 
     # Randomly apply a rule
+    echo "Applying $(basename $rule) ...."
     eval "$rule"
+
+    # Remove superfluous 'popfd'/'pushfd' pairs
+    perl -0777 -i -pe 's/(\n\s+[poush]{3,4}fd\s+;){2}//igs' asm_code.asm
 
     # Re-assemble
     ./encode.rb asm_code.asm -o payload
@@ -109,4 +114,5 @@ done
 
 mv payload $2
 
-rm -f encode.rb disassemble.rb asm_code.asm exeencode.rb CTRL_SUMS ctrl_payload
+rm -f encode.rb disassemble.rb exeencode.rb CTRL_SUMS ctrl_payload
+#rm asm_code.asm

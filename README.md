@@ -1,8 +1,8 @@
 # THABTO
 
-Automatic ghostwriting for AV evasion.
+Automatic ghostwriting for AV evasion. Developed and tested on Kali 2020.3
   
-## Work in progress. Not ready yet!
+## Work in progress. All non-working rules have .rbak extension.
   
 To do:
   * Sequence injection randomizer
