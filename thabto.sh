@@ -1,3 +1,7 @@
+#!/bin/bash
+
+# As of now, only x86 is supported
+
 #
 #  $WITH$$\ $$\   $$\  $THE$$\   QUARTERS\ $BY$OUR$\ $SIDE$\
 #  \__$$  __|$$ |  $$ |$$  __$$\ $$  __$$\\__$$  __|$$  __$$\
@@ -105,4 +109,4 @@ done
 
 mv payload $2
 
-#rm -f encode.rb disassemble.rb asm_code.asm $RAW_LOC exeencode.rb
+rm -f encode.rb disassemble.rb asm_code.asm exeencode.rb CTRL_SUMS ctrl_payload

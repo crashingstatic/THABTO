@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Check for when a registery is cleared
 # xor eax, eax
 # mov eax, 0

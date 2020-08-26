@@ -1,3 +1,5 @@
+#!/bin/bash
+
 ## Do some control flow analysis, and them insert random sequence of jump next_label, label, and randomize the blocks.
 
 ## Example :
